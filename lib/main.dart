@@ -1,134 +1,50 @@
-import 'package:avatar_glow/avatar_glow.dart';
+import 'package:anxi_pro/helper/functions.dart';
+import 'package:anxi_pro/views/dashboard.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_text_highlight/flutter_text_highlight.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:anxi_pro/views/login.dart';
+import 'package:anxi_pro/views/record_home.dart';
 
-void main() {
+// enum AudioState { recording, stop, play }
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    checkUserLoggedInDetail();
+    super.initState();
+  }
+
+  checkUserLoggedInDetail() async {
+    HelperFunctions.getUserLoggedInDetails().then((val) {
+      setState(() {
+        _isLoggedIn = val;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Voice Rec',
+        title: 'P_Diary',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.purple,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: SpeechScreen());
-  }
-}
-
-class SpeechScreen extends StatefulWidget {
-  @override
-  _SpeechScreenState createState() => _SpeechScreenState();
-}
-
-class _SpeechScreenState extends State<SpeechScreen> {
-  final Map<String, HighlightedWord> _highlights = {
-    'flutter': HighlightedWord(
-        onTap: () => print('flutter'),
-        textStyle: const TextStyle(
-          color: Colors.blue,
-          fontWeight: FontWeight.bold,
-        )),
-    'voice': HighlightedWord(
-        onTap: () => print('voice'),
-        textStyle: const TextStyle(
-          color: Colors.green,
-          fontWeight: FontWeight.bold,
-        )),
-    'subscribe': HighlightedWord(
-        onTap: () => print('subscribe'),
-        textStyle: const TextStyle(
-          color: Colors.red,
-          fontWeight: FontWeight.bold,
-        )),
-    'like': HighlightedWord(
-        onTap: () => print('like'),
-        textStyle: const TextStyle(
-          color: Colors.green,
-          fontWeight: FontWeight.bold,
-        )),
-  };
-
-  stt.SpeechToText _speech;
-  bool _isListening = false;
-  String _text = 'Press the button and start speaking';
-  double _confindence = 1.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _speech = stt.SpeechToText();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:
-            Text('Confidence : ${(_confindence * 100.0).toStringAsFixed(1)}%'),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: AvatarGlow(
-        animate: _isListening,
-        glowColor: Theme.of(context).primaryColor,
-        endRadius: 75.0,
-        duration: const Duration(milliseconds: 2000),
-        repeatPauseDuration: const Duration(milliseconds: 100),
-        repeat: true,
-        child: FloatingActionButton(
-          onPressed: _listen,
-          child: Icon(_isListening ? Icons.mic : Icons.mic_none),
-        ),
-      ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
-          child: TextHighlight(
-            text: (_text.length < 1) ? '' : _text,
-            // at least must be empty string ''
-            words: _highlights,
-            textStyle: const TextStyle(
-              fontSize: 32.0,
-              color: Colors.black,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) => print('OnStatus: $val'),
-        onError: (val) => print('OnError: $val'),
-      );
-      if (available) {
-        setState(() => _isListening = true);
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _text = val.recognizedWords;
-            print(_text);
-
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              //package somes return confidence 0
-              _confindence = val.confidence;
-            }
-          }),
+        home: (_isLoggedIn ?? false) ? Dashboard() : LogIn() //RecordScreen(),
         );
-      }
-    } else {
-      print('stopped');
-      setState(() => _isListening = false);
-      _speech.stop();
-    }
   }
 }
