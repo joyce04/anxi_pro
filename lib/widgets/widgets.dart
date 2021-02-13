@@ -1,3 +1,4 @@
+import 'package:anxi_pro/color_scheme.dart';
 import 'package:flutter/material.dart';
 
 Widget appBar(BuildContext context) {
@@ -6,13 +7,12 @@ Widget appBar(BuildContext context) {
       style: TextStyle(fontSize: 22),
       children: <TextSpan>[
         TextSpan(
-            text: 'P',
-            style:
-                TextStyle(fontWeight: FontWeight.w600, color: Colors.black54)),
-        TextSpan(
-            text: ' Diary',
+            text: 'Mind',
             style: TextStyle(
-                fontWeight: FontWeight.w600, color: Colors.deepPurple)),
+                fontWeight: FontWeight.w600, color: ppurple)),
+        TextSpan(
+            text: ' Journal',
+            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
       ],
     ),
   );

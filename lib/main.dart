@@ -38,9 +38,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'P_Diary',
+        title: 'Mind Journal',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          fontFamily: 'ubuntu',
           primarySwatch: Colors.purple,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

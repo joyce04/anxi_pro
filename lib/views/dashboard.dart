@@ -5,6 +5,7 @@ import 'package:anxi_pro/views/save_survey.dart';
 import 'package:anxi_pro/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
+import 'package:anxi_pro/color_scheme.dart';
 import 'check_my_state.dart';
 
 class Dashboard extends StatefulWidget {
@@ -15,13 +16,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Stream surveyStream;
   DatabaseService dbService = new DatabaseService();
-  List<Color> tileColors = [
-    Color(0xff7f58af),
-    Color(0xff64c5eb),
-    Color(0xffb65fcf),
-    Color(0xffd6d1f5),
-    Color(0xff7a4988)
-  ];
+  List<Color> tileColors = [purple, pink, purple_2, pink_2, purple_3, purple_4];
+  String selectedType = 'initial';
+  String selectedFrequency = 'daily';
 
   Color randomlyChooseColor() {
     final random = new Random();
@@ -30,7 +27,13 @@ class _DashboardState extends State<Dashboard> {
 
   Widget surveyList() {
     return Container(
-      child: StreamBuilder(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text("Choose survey type you want to record",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+      SizedBox(
+        height: 30,
+      ),
+      StreamBuilder(
         stream: surveyStream,
         builder: (context, snapshot) {
           return snapshot.data == null
@@ -39,6 +42,8 @@ class _DashboardState extends State<Dashboard> {
                   child: CircularProgressIndicator(),
                 ))
               : ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
                     return SurveyTile(
@@ -49,7 +54,7 @@ class _DashboardState extends State<Dashboard> {
                   });
         },
       ),
-    );
+    ]));
   }
 
   @override
@@ -58,19 +63,241 @@ class _DashboardState extends State<Dashboard> {
       setState(() {
         surveyStream = val;
       });
+      print(val);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: purple,
       appBar: AppBar(
         title: appBar(context),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         brightness: Brightness.dark,
       ),
-      body: surveyList(),
+      body: Column(
+        children: [
+          Expanded(
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40)),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Record your feelings",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                changeSelectedType('initial');
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 100,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.43,
+                                    decoration: BoxDecoration(
+                                      color: ppurple,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    'Initial Screening',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color(0xffededed),
+                                    ),
+                                    child: (selectedType == 'initial')
+                                        ? Icon(Icons.check_circle,
+                                            color: pink, size: 30)
+                                        : Container(),
+                                  )
+                                ],
+                              )),
+                          InkWell(
+                              onTap: () {
+                                changeSelectedType('upkeep');
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 100,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.43,
+                                    decoration: BoxDecoration(
+                                      color: ppurple,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    'Upkeep',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color(0xffededed),
+                                    ),
+                                    child: (selectedType == 'upkeep')
+                                        ? Icon(Icons.check_circle,
+                                            color: pink, size: 30)
+                                        : Container(),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                        'Selected Notification Frequency',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                changeFrequency("Q4H");
+                              },
+                              child: Container(
+                                  height: 50,
+                                  width: 110,
+                                  decoration: (selectedFrequency == 'Q4H')
+                                      ? BoxDecoration(
+                                          color: pink,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))
+                                      : BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.black
+                                                  .withOpacity(0.3)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                  child: Center(
+                                      child: Text("Q4H",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  (selectedFrequency == 'Q4H')
+                                                      ? Colors.white
+                                                      : Colors.black))))),
+                          InkWell(
+                              onTap: () {
+                                changeFrequency("daily");
+                              },
+                              child: Container(
+                                  height: 50,
+                                  width: 110,
+                                  decoration: (selectedFrequency == 'daily')
+                                      ? BoxDecoration(
+                                          color: pink,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))
+                                      : BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.black
+                                                  .withOpacity(0.3)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                  child: Center(
+                                      child: Text("Daily",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color:
+                                                  (selectedFrequency == 'daily')
+                                                      ? Colors.white
+                                                      : Colors.black))))),
+                          InkWell(
+                              onTap: () {
+                                changeFrequency("weekly");
+                              },
+                              child: Container(
+                                  height: 50,
+                                  width: 110,
+                                  decoration: (selectedFrequency == 'weekly')
+                                      ? BoxDecoration(
+                                          color: pink,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)))
+                                      : BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              color: Colors.black
+                                                  .withOpacity(0.3)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                  child: Center(
+                                      child: Text("Weekly",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: (selectedFrequency ==
+                                                      'weekly')
+                                                  ? Colors.white
+                                                  : Colors.black)))))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      surveyList(),
+                    ],
+                  )))
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -79,6 +306,16 @@ class _DashboardState extends State<Dashboard> {
         },
       ),
     );
+  }
+
+  void changeSelectedType(String type) {
+    selectedType = type;
+    setState(() {});
+  }
+
+  void changeFrequency(String frequency) {
+    selectedFrequency = frequency;
+    setState(() {});
   }
 }
 
@@ -102,7 +339,7 @@ class SurveyTile extends StatelessWidget {
               MaterialPageRoute(builder: (context) => SaveSurvey(surveyId)));
         },
         child: Container(
-            margin: EdgeInsets.only(right: 24, left: 24, bottom: 8),
+            margin: EdgeInsets.only(right: 4, left: 4, bottom: 8),
             decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(30)),

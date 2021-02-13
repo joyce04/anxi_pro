@@ -1,3 +1,4 @@
+import 'package:anxi_pro/color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:anxi_pro/services/auth.dart';
 import 'package:anxi_pro/widgets/widgets.dart';
@@ -36,6 +37,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: purple,
         appBar: AppBar(
           title: appBar(context),
           centerTitle: true,
