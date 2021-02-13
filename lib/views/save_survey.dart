@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:anxi_pro/models/question.dart';
+import 'package:anxi_pro/services/auth.dart';
 import 'package:anxi_pro/services/database.dart';
 import 'package:anxi_pro/widgets/radio_widgets.dart';
 import 'package:anxi_pro/widgets/widgets.dart';
@@ -21,39 +22,41 @@ int answered = 0;
 
 class _SaveSurveyState extends State<SaveSurvey> {
   DatabaseService dbService = new DatabaseService();
-  List<RadioQuestion> radioQuestions = [];
+  Stream questionStream;
+  List<QuestionTile> questionTiles = [];
+  AuthService authService = new AuthService();
 
-  Future getQuestionModelFromSnapshot() async {
-    bool shuffle = false;
+  RadioQuestion getQuestionModelFromSnapshot(
+      DocumentSnapshot doc, bool shuffle) {
+    RadioQuestion question = new RadioQuestion();
+    question.title = doc.data()['title'];
 
-    dbService.getSurveyQuestions(widget.surveyId).then((val) {
-      answered = 0;
+    var optionJson = jsonDecode(doc.data()['answer_option'])['content'] as List;
 
-      val.docs.forEach((doc) {
-        RadioQuestion question = new RadioQuestion();
-        question.title = doc.data()['title'];
+    List<phqAnswerOption> answerOptions =
+        optionJson.map((op) => phqAnswerOption.fromJson(op)).toList();
 
-        var optionJson =
-            json.decode(doc.data()['answer_option'])['content'] as List;
-
-        List<phqAnswerOption> answerOptions =
-            optionJson.map((op) => phqAnswerOption.fromJson(op)).toList();
-
-        if (shuffle) {
-          answerOptions.shuffle();
-        }
-        question.answer_options = answerOptions;
-        radioQuestions.add(question);
-      });
-      total = radioQuestions.length;
-      print('$total, ${widget.surveyId}');
-    });
-    return radioQuestions;
+    if (shuffle) {
+      answerOptions.shuffle();
+    }
+    question.answer_options = answerOptions;
+    print(question);
+    return question;
   }
 
   @override
   void initState() {
     super.initState();
+    initializeQuestions();
+  }
+
+  initializeQuestions() async {
+    dbService.getSurveyQuestions(widget.surveyId).then((val) {
+      setState(() {
+        questionStream = val;
+      });
+      answered = 0;
+    });
   }
 
   @override
@@ -67,40 +70,72 @@ class _SaveSurveyState extends State<SaveSurvey> {
         brightness: Brightness.dark,
       ),
       body: Container(
-          child: Column(
+          child: SingleChildScrollView(
+              child: Column(
         children: [
-          radioQuestions.length == 0
-              ? Container(
-                  child: Center(
-                  child: CircularProgressIndicator(),
-                ))
-              : Container(
-                  child: FutureBuilder(
-                  future: getQuestionModelFromSnapshot(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return ListView.builder(
-                      padding: EdgeInsets.all(15),
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount: radioQuestions.length,
-                      itemBuilder: (context, index) {
-                        return QuestionTile(
-                            radioQuestion: radioQuestions[index], index: index);
-                      },
-                    );
-                  },
-                ))
+          Container(
+              child: StreamBuilder(
+                  stream: questionStream,
+                  builder: (context, snapshot) {
+                    total = snapshot.data.docs.length;
+                    return snapshot.data == null
+                        ? Container(
+                            child: Center(
+                            child: CircularProgressIndicator(),
+                          ))
+                        : ListView.builder(
+                            padding: EdgeInsets.all(15),
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemCount: snapshot.data.docs.length,
+                            itemBuilder: (context, index) {
+                              QuestionTile qt = QuestionTile(
+                                  qId: snapshot.data.docs[index].id,
+                                  radioQuestion: getQuestionModelFromSnapshot(
+                                      snapshot.data.docs[index], false),
+                                  index: index);
+                              questionTiles.add(qt);
+                              return qt;
+                            },
+                          );
+                  }))
         ],
-      )),
+      ))),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.check),
+        onPressed: () {
+          int answered = 0;
+          List<Answer> saved_answers = [];
+          for (var t in questionTiles) {
+            if (t.optionSelected.length > 0) {
+              answered += 1;
+              saved_answers.add(Answer(t.qId, t.optionSelected));
+            }
+          }
+
+          if (answered == questionTiles.length) {
+            print('save to firebase');
+            dbService.saveSurveyAnwsers(new UserAnswer(
+                authService.getCurrentUserUid(),
+                widget.surveyId,
+                saved_answers));
+            Navigator.pop(context);
+          }
+
+          print(saved_answers);
+        },
+      ),
     );
   }
 }
 
 class QuestionTile extends StatefulWidget {
+  final String qId;
   final RadioQuestion radioQuestion;
   final int index;
+  String optionSelected = '';
 
-  QuestionTile({this.radioQuestion, this.index});
+  QuestionTile({this.qId, this.radioQuestion, this.index});
 
   @override
   _QuestionTileState createState() => _QuestionTileState();
@@ -108,50 +143,53 @@ class QuestionTile extends StatefulWidget {
 
 class _QuestionTileState extends State<QuestionTile> {
   List<RadioTile> radioTiles;
-  String optionSelected = '';
 
-  whenPressed(int index) {
-    setState(() {
-      for (var i = 0; i < radioTiles.length; i++) {
-        if (i == index) {
-          radioTiles[i].selected = true;
-          optionSelected = radioTiles[i].val;
-        } else {
-          radioTiles[i].selected = false;
-        }
+  _whenPressed(int index) {
+    print(index);
+    print(radioTiles[index].selected);
+    for (var i = 0; i < radioTiles.length; i++) {
+      if (i == index) {
+        radioTiles[i].selected = true;
+        widget.optionSelected = radioTiles[i].val;
+      } else {
+        radioTiles[i].selected = false;
+        radioTiles[i].update();
       }
-    });
+    }
+    print(radioTiles[index].selected);
+    print(widget.optionSelected);
   }
 
   List<RadioTile> generateOptions() {
-    var radioOptions = List<RadioTile>();
-    for (var i = 0; i < widget.radioQuestion.answer_options.length; i++) {
-      radioOptions.add(RadioTile(
+    return widget.radioQuestion.answer_options.asMap().entries.map((entry) {
+      int idx = entry.key;
+      phqAnswerOption values = entry.value;
+      return RadioTile(
         option: '✓',
-        val: widget.radioQuestion.answer_options[i].val,
-        desc: widget.radioQuestion.answer_options[i].desc,
-        selected: false,
-        onPressed: () => {whenPressed(i)},
-      ));
-    }
-    return radioOptions;
+        val: values.val,
+        desc: values.desc,
+        onPressed: () {
+          _whenPressed(idx);
+        },
+      );
+    }).toList();
   }
 
   @override
   void initState() {
     super.initState();
-    radioTiles = generateOptions();
   }
 
   @override
   Widget build(BuildContext context) {
+    radioTiles = generateOptions();
     return Container(
         padding: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.radioQuestion.title,
+              "Q${widget.index + 1}.  ${widget.radioQuestion.title}",
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(

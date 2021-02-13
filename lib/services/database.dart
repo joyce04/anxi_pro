@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:anxi_pro/models/question.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
@@ -31,7 +34,24 @@ class DatabaseService {
         .collection('surveys')
         .doc(surveyId)
         .collection('questions')
-        .orderBy('order', descending: true)
-        .get();
+        .orderBy('order', descending: false)
+        .snapshots();
+  }
+
+  Future<void> saveSurveyAnwsers(UserAnswer userAnswer) async {
+    // TODO calculate score
+    CollectionReference uAnswers =
+        FirebaseFirestore.instance.collection('user_answers');
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    return uAnswers.add(userAnswer.convertToMap()).then((val) {
+      userAnswer.answers.forEach((element) {
+        batch.set(uAnswers.doc(val.id).collection('answers').doc(), element.convertToMap());
+      });
+
+      return batch.commit();
+    }).catchError((e) {
+      print(e.toString());
+    });
   }
 }

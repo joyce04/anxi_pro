@@ -2,16 +2,16 @@ import 'package:anxi_pro/models/question.dart';
 import 'package:flutter/material.dart';
 
 class RadioTile extends StatefulWidget {
-  final String option, desc, val;
-  bool selected;
-  final VoidCallback onPressed;
+  RadioTile({this.option, this.val, this.desc, this.onPressed});
 
-  RadioTile(
-      {@required this.option,
-      @required this.val,
-      @required this.desc,
-      @required this.selected,
-      @required this.onPressed});
+  String option, desc, val;
+  bool selected = false;
+  VoidCallback onPressed;
+  _RadioTileState _state;
+
+  update() {
+    _state.setState(() {});
+  }
 
   @override
   _RadioTileState createState() => _RadioTileState();
@@ -20,8 +20,14 @@ class RadioTile extends StatefulWidget {
 class _RadioTileState extends State<RadioTile> {
   @override
   Widget build(BuildContext context) {
+    widget._state = this;
+
     return GestureDetector(
-        onTap: widget.onPressed,
+        // onTap: widget.onPressed,
+        onTap: () {
+          widget.onPressed();
+          widget.update();
+        },
         child: Container(
             padding: EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 5),
             child: Row(

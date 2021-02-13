@@ -34,7 +34,10 @@ class _DashboardState extends State<Dashboard> {
         stream: surveyStream,
         builder: (context, snapshot) {
           return snapshot.data == null
-              ? Container()
+              ? Container(
+                  child: Center(
+                  child: CircularProgressIndicator(),
+                ))
               : ListView.builder(
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {

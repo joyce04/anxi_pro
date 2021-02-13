@@ -4,6 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  String getCurrentUserUid() {
+    return _auth.currentUser.uid;
+  }
+
   AppUser _appUserFromFirebaseUser(User firebaseUser) {
     return firebaseUser != null ? AppUser(uid: firebaseUser.uid) : null;
   }
