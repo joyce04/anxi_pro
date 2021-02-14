@@ -1,5 +1,7 @@
+import 'package:anxi_pro/color_scheme.dart';
 import 'package:anxi_pro/helper/functions.dart';
 import 'package:anxi_pro/views/dashboard.dart';
+import 'package:anxi_pro/views/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:anxi_pro/views/login.dart';
@@ -42,10 +44,10 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'ubuntu',
-          primarySwatch: Colors.purple,
+          primarySwatch: Colors.deepPurple,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: (_isLoggedIn ?? false) ? Dashboard() : LogIn() //RecordScreen(),
+        home: (_isLoggedIn ?? false) ? Home() : LogIn() //RecordScreen(),
         );
   }
 }
