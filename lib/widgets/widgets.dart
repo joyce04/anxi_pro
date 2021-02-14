@@ -12,7 +12,7 @@ Widget appBar(BuildContext context) {
                 fontWeight: FontWeight.w600, color: ppurple)),
         TextSpan(
             text: ' Journal',
-            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+            style: TextStyle(fontWeight: FontWeight.w600, color: Colors.orange)),
       ],
     ),
   );
@@ -22,7 +22,7 @@ Widget purpleButton(BuildContext context, String label) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 18),
     decoration: BoxDecoration(
-        color: Colors.deepPurple, borderRadius: BorderRadius.circular(30)),
+        color: Colors.deepPurple, borderRadius: BorderRadius.circular(10)),
     alignment: Alignment.center,
     width: MediaQuery.of(context).size.width - 48,
     child: Text(

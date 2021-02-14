@@ -6,7 +6,7 @@ import 'package:anxi_pro/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 import 'package:anxi_pro/color_scheme.dart';
-import 'check_my_state.dart';
+import 'record_my_state.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   Stream surveyStream;
   DatabaseService dbService = new DatabaseService();
-  List<Color> tileColors = [purple, pink, purple_2, pink_2, purple_3, purple_4];
+  List<Color> tileColors = [purple, orange, purple_2, pink_2, purple_3, purple_4];
   String selectedType = 'initial';
   String selectedFrequency = 'daily';
 
@@ -142,7 +142,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                     child: (selectedType == 'initial')
                                         ? Icon(Icons.check_circle,
-                                            color: pink, size: 30)
+                                            color: orange, size: 30)
                                         : Container(),
                                   )
                                 ],
@@ -183,7 +183,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                     child: (selectedType == 'upkeep')
                                         ? Icon(Icons.check_circle,
-                                            color: pink, size: 30)
+                                            color: orange, size: 30)
                                         : Container(),
                                   )
                                 ],
@@ -194,7 +194,7 @@ class _DashboardState extends State<Dashboard> {
                         height: 30,
                       ),
                       Text(
-                        'Selected Notification Frequency',
+                        'Select Notification Frequency',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
@@ -213,7 +213,7 @@ class _DashboardState extends State<Dashboard> {
                                   width: 110,
                                   decoration: (selectedFrequency == 'Q4H')
                                       ? BoxDecoration(
-                                          color: pink,
+                                          color: orange,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10)))
                                       : BoxDecoration(
@@ -241,7 +241,7 @@ class _DashboardState extends State<Dashboard> {
                                   width: 110,
                                   decoration: (selectedFrequency == 'daily')
                                       ? BoxDecoration(
-                                          color: pink,
+                                          color: orange,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10)))
                                       : BoxDecoration(
@@ -269,7 +269,7 @@ class _DashboardState extends State<Dashboard> {
                                   width: 110,
                                   decoration: (selectedFrequency == 'weekly')
                                       ? BoxDecoration(
-                                          color: pink,
+                                          color: orange,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10)))
                                       : BoxDecoration(
@@ -302,7 +302,7 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CheckMyState()));
+              context, MaterialPageRoute(builder: (context) => RecordMyState()));
         },
       ),
     );
