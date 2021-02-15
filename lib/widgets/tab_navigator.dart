@@ -5,7 +5,7 @@ import 'package:anxi_pro/views/export.dart';
 import 'package:anxi_pro/views/setting.dart';
 import 'package:flutter/material.dart';
 
-enum TabItem { dashboard, calender, chart, person, export }
+enum TabItem { dashboard, calender, chart, export, person }
 
 class TabInfo {
   String tabname;

@@ -18,8 +18,8 @@ class _HomeState extends State<Home> {
     TabItem.dashboard: GlobalKey<NavigatorState>(),
     TabItem.calender: GlobalKey<NavigatorState>(),
     TabItem.chart: GlobalKey<NavigatorState>(),
-    TabItem.person: GlobalKey<NavigatorState>(),
     TabItem.export: GlobalKey<NavigatorState>(),
+    TabItem.person: GlobalKey<NavigatorState>(),
   };
 
   void _selectTab(TabItem tabItem) {
@@ -58,6 +58,7 @@ class _HomeState extends State<Home> {
               _buildOffStageNavigator(TabItem.dashboard),
               _buildOffStageNavigator(TabItem.calender),
               _buildOffStageNavigator(TabItem.chart),
+              // _buildOffStageNavigator(TabItem.export),
               _buildOffStageNavigator(TabItem.person),
             ]),
           ))
