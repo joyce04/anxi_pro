@@ -29,6 +29,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             _buildItem(tabItem: TabItem.calender),
             _buildItem(tabItem: TabItem.chart),
             _buildItem(tabItem: TabItem.person),
+            _buildItem(tabItem: TabItem.export),
           ],
           currentIndex: _selectedTabIndex,
           selectedItemColor: yellow,

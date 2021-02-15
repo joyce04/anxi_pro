@@ -47,12 +47,6 @@ class UserAnswer {
   UserAnswer(this.userId, this.surveyId, this.answers);
 
   Map<String, dynamic> convertToMap() {
-
-    return {
-      'userId': this.userId,
-      'surveyId': this.surveyId,
-      'savedAt': Timestamp.now()
-
-    };
+    return {'userId': this.userId, 'surveyId': this.surveyId, 'savedAt': Timestamp.now()};
   }
 }

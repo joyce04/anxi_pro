@@ -1,10 +1,10 @@
 import 'package:anxi_pro/color_scheme.dart';
-import 'package:anxi_pro/color_scheme.dart';
+import 'package:anxi_pro/models/mood.dart';
+import 'package:anxi_pro/services/auth.dart';
 import 'package:anxi_pro/services/database.dart';
-import 'package:anxi_pro/views/dashboard.dart';
+import 'package:anxi_pro/views/home.dart';
 import 'package:anxi_pro/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:random_string/random_string.dart';
 
 class RecordMyState extends StatefulWidget {
   @override
@@ -12,9 +12,9 @@ class RecordMyState extends StatefulWidget {
 }
 
 class _RecordMyStateState extends State<RecordMyState> {
-  String mood, oneLine;
-  String feeling = 'bad';
+  String feeling, oneLine, feelingDetail;
   DatabaseService dbservice = new DatabaseService();
+  AuthService authService = new AuthService();
   List<String> selectedCauses = [];
 
   bool _isLoading = false;
@@ -23,18 +23,15 @@ class _RecordMyStateState extends State<RecordMyState> {
     setState(() {
       _isLoading = true;
     });
-    String moodId = randomAlphaNumeric(4) + '_' + DateTime.now().millisecondsSinceEpoch.toString();
-    Map<String, String> moodMap = {
-      'moodId': moodId,
-      'mood': mood,
-      'oneLine': oneLine,
-      'feeling': feeling,
-      'causes': selectedCauses.join(",")
-    };
-    await dbservice.addMood(moodMap, moodId).then((val) {
+    var mood = new Mood(authService.getCurrentUserUid(), feeling);
+    mood.oneLine = oneLine;
+    mood.feelingDetail = feelingDetail;
+    mood.causes = selectedCauses;
+
+    await dbservice.addMood(mood).then((val) {
       setState(() {
         _isLoading = false;
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
       });
     });
   }
@@ -217,7 +214,7 @@ class _RecordMyStateState extends State<RecordMyState> {
                                     hintText: "Would you like to describe in more detail?",
                                     hintStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
                                 onChanged: (val) {
-                                  mood = val;
+                                  feelingDetail = val;
                                 },
                               ),
                               SizedBox(
@@ -293,8 +290,9 @@ class _RecordMyStateState extends State<RecordMyState> {
   }
 
   void changeFeeling(String feel) {
-    feeling = feel;
-    setState(() {});
+    setState(() {
+      feeling = feel;
+    });
   }
 
   Column extraWidget(String img, String name, String val) {

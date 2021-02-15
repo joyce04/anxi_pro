@@ -1,7 +1,4 @@
-import 'dart:math';
 
-import 'package:anxi_pro/services/database.dart';
-import 'package:anxi_pro/views/save_survey.dart';
 import 'package:anxi_pro/widgets/bottom_navigator.dart';
 import 'package:anxi_pro/widgets/tab_navigator.dart';
 import 'package:anxi_pro/widgets/widgets.dart';
@@ -22,6 +19,7 @@ class _HomeState extends State<Home> {
     TabItem.calender: GlobalKey<NavigatorState>(),
     TabItem.chart: GlobalKey<NavigatorState>(),
     TabItem.person: GlobalKey<NavigatorState>(),
+    TabItem.export: GlobalKey<NavigatorState>(),
   };
 
   void _selectTab(TabItem tabItem) {
