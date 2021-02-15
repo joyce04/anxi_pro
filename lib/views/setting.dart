@@ -71,8 +71,8 @@ class _SettingState extends State<Setting> {
             ),
             _buildNotificationOptionRow("Push Notifications", true),
             SizedBox(
-              height: 50,
-            )
+              height: 30,
+            ),
           ],
         ));
   }

@@ -13,4 +13,9 @@ class HelperFunctions {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool(userLoggedInKey);
   }
+
+  static removeUserLoggedInDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(userLoggedInKey);
+  }
 }

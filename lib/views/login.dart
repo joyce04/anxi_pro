@@ -42,7 +42,7 @@ class __LogInState extends State<LogIn> {
     return Scaffold(
         backgroundColor: purple,
         appBar: AppBar(
-          title: appBar(context),
+          title: appBar(context, false),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0.0,

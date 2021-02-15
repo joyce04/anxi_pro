@@ -59,67 +59,58 @@ class _SaveSurveyState extends State<SaveSurvey> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: appBar(context),
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        iconTheme: IconThemeData(color: Colors.black54),
-        brightness: Brightness.dark,
-      ),
-      body: Container(
-          child: SingleChildScrollView(
-              child: Column(
-        children: [
-          Container(
-              child: StreamBuilder(
-                  stream: questionStream,
-                  builder: (context, snapshot) {
-                    total = snapshot.data.docs.length;
-                    return snapshot.data == null
-                        ? Container(
-                            child: Center(
-                            child: CircularProgressIndicator(),
-                          ))
-                        : ListView.builder(
-                            padding: EdgeInsets.all(15),
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemCount: snapshot.data.docs.length,
-                            itemBuilder: (context, index) {
-                              QuestionTile qt = QuestionTile(
-                                  qId: snapshot.data.docs[index].id,
-                                  radioQuestion: getQuestionModelFromSnapshot(snapshot.data.docs[index], false),
-                                  index: index);
-                              questionTiles.add(qt);
-                              return qt;
-                            },
-                          );
-                  })),
-          GestureDetector(
-              onTap: () {
-                int answered = 0;
-                List<Answer> saved_answers = [];
-                for (var t in questionTiles) {
-                  if (t.optionSelected.length > 0) {
-                    answered += 1;
-                    saved_answers.add(Answer(t.qId, t.optionSelected));
-                  }
+    return Container(
+        child: SingleChildScrollView(
+            child: Column(
+      children: [
+        Container(
+            child: StreamBuilder(
+                stream: questionStream,
+                builder: (context, snapshot) {
+                  total = snapshot.data.docs.length;
+                  return snapshot.data == null
+                      ? Container(
+                          child: Center(
+                          child: CircularProgressIndicator(),
+                        ))
+                      : ListView.builder(
+                          padding: EdgeInsets.all(15),
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            QuestionTile qt = QuestionTile(
+                                qId: snapshot.data.docs[index].id,
+                                radioQuestion: getQuestionModelFromSnapshot(snapshot.data.docs[index], false),
+                                index: index);
+                            questionTiles.add(qt);
+                            return qt;
+                          },
+                        );
+                })),
+        GestureDetector(
+            onTap: () {
+              int answered = 0;
+              List<Answer> saved_answers = [];
+              for (var t in questionTiles) {
+                if (t.optionSelected.length > 0) {
+                  answered += 1;
+                  saved_answers.add(Answer(t.qId, t.optionSelected));
                 }
+              }
 
-                if (answered == questionTiles.length) {
-                  print('save to firebase');
-                  dbService.saveSurveyAnwsers(
-                      new UserAnswer(authService.getCurrentUserUid(), widget.surveyId, saved_answers));
-                  Navigator.pop(context);
-                }
+              if (answered == questionTiles.length) {
+                print('save to firebase');
+                dbService
+                    .saveSurveyAnwsers(new UserAnswer(authService.getCurrentUserUid(), widget.surveyId, saved_answers));
+                Navigator.pop(context);
+              }
 
-                print(saved_answers);
-              },
-              child: purpleButton(context, 'Save'))
-        ],
-      ))),
-    );
+              print(saved_answers);
+            },
+            child: purpleButton(context, 'Save'))
+      ],
+    )));
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:anxi_pro/helper/functions.dart';
 import 'package:anxi_pro/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,8 +15,7 @@ class AuthService {
 
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return _appUserFromFirebaseUser(userCredential.user);
     } catch (e) {
       print(e.toString());
@@ -24,8 +24,7 @@ class AuthService {
 
   Future signUpWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return _appUserFromFirebaseUser(userCredential.user);
     } catch (e) {
       print(e.toString());
@@ -34,6 +33,7 @@ class AuthService {
 
   Future signOut() async {
     try {
+      HelperFunctions.removeUserLoggedInDetails();
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());

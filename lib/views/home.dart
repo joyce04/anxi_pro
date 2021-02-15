@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: purple,
       appBar: AppBar(
-        title: appBar(context),
+        title: appBar(context, true),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         brightness: Brightness.dark,

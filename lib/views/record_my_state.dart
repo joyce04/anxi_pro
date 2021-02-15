@@ -40,7 +40,7 @@ class _RecordMyStateState extends State<RecordMyState> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: appBar(context),
+          title: appBar(context, true),
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           iconTheme: IconThemeData(color: Colors.black87),
