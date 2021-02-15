@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:anxi_pro/services/database.dart';
 import 'package:anxi_pro/views/save_survey.dart';
+import 'package:anxi_pro/widgets/goal_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:anxi_pro/color_scheme.dart';
@@ -72,90 +74,7 @@ class _DashboardState extends State<Dashboard> {
         SizedBox(
           height: 20,
         ),
-        Text(
-          "Record your feelings",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-                onTap: () {
-                  changeSelectedType('initial');
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: MediaQuery.of(context).size.width * 0.43,
-                      decoration: BoxDecoration(
-                        color: ppurple,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Initial Screening',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xffededed),
-                      ),
-                      child:
-                          (selectedType == 'initial') ? Icon(Icons.check_circle, color: orange, size: 30) : Container(),
-                    )
-                  ],
-                )),
-            InkWell(
-                onTap: () {
-                  changeSelectedType('upkeep');
-                },
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: MediaQuery.of(context).size.width * 0.43,
-                      decoration: BoxDecoration(
-                        color: ppurple,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      'Upkeep',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xffededed),
-                      ),
-                      child:
-                          (selectedType == 'upkeep') ? Icon(Icons.check_circle, color: orange, size: 30) : Container(),
-                    )
-                  ],
-                ))
-          ],
-        ),
+        goal_list(MediaQuery.of(context).size.width * 0.8),
         SizedBox(
           height: 30,
         ),

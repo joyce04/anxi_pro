@@ -39,25 +39,25 @@ class _CalendarState extends State<Calendar> {
     return Column(
       children: [
         TableCalendar(
-          calendarController: _calendarController,
-          initialCalendarFormat: CalendarFormat.week,
-          startingDayOfWeek: StartingDayOfWeek.monday,
-          formatAnimation: FormatAnimation.slide,
-          headerStyle: HeaderStyle(
-            centerHeaderTitle: true,
-            formatButtonVisible: false,
-            leftChevronMargin: EdgeInsets.only(left: 70),
-            rightChevronMargin: EdgeInsets.only(right: 70),
-          ),
-          calendarStyle: CalendarStyle(
-            weekendStyle: TextStyle(color: dark_orange),
-          ),
-          daysOfWeekStyle: DaysOfWeekStyle(
-            weekendStyle: TextStyle(color: dark_orange),
-          ),
-          onDaySelected: _onDaySelected,
-          onVisibleDaysChanged: _onVisibleDaysChanged,
-        ),
+            calendarController: _calendarController,
+            initialCalendarFormat: CalendarFormat.week,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            formatAnimation: FormatAnimation.slide,
+            headerStyle: HeaderStyle(
+              centerHeaderTitle: true,
+              formatButtonVisible: false,
+              leftChevronMargin: EdgeInsets.only(left: 70),
+              rightChevronMargin: EdgeInsets.only(right: 70),
+            ),
+            calendarStyle: CalendarStyle(
+              weekendStyle: TextStyle(color: dark_orange),
+            ),
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekendStyle: TextStyle(color: dark_orange),
+            ),
+            onDaySelected: _onDaySelected,
+            onVisibleDaysChanged: _onVisibleDaysChanged,
+            initialSelectedDay: _selectedDate),
         SizedBox(
           height: 5,
         ),
@@ -107,11 +107,11 @@ class _CalendarState extends State<Calendar> {
 
   void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
     print('visible daay changed');
-    if (last.compareTo(_selectedDate) < 0) {
-      _onDaySelected(last, null, null);
-    } else {
-      _onDaySelected(first, null, null);
-    }
+    // if (last.compareTo(_selectedDate) < 0) {
+    //   _onDaySelected(last, null, null);
+    // } else {
+    //   _onDaySelected(first, null, null);
+    // }
   }
 }
 
@@ -207,3 +207,6 @@ class EmotionTile extends StatelessWidget {
     );
   }
 }
+
+//TODO mood dot expression apply by chaning calendar builders?
+//https://medium.com/flutterdevs/display-dynamic-events-at-calendar-in-flutter-22b69b29daf6

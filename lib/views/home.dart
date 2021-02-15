@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
               _buildOffStageNavigator(TabItem.dashboard),
               _buildOffStageNavigator(TabItem.calender),
               _buildOffStageNavigator(TabItem.chart),
-              // _buildOffStageNavigator(TabItem.export),
+              _buildOffStageNavigator(TabItem.export),
               _buildOffStageNavigator(TabItem.person),
             ]),
           ))

@@ -26,15 +26,13 @@ class _SaveSurveyState extends State<SaveSurvey> {
   List<QuestionTile> questionTiles = [];
   AuthService authService = new AuthService();
 
-  RadioQuestion getQuestionModelFromSnapshot(
-      DocumentSnapshot doc, bool shuffle) {
+  RadioQuestion getQuestionModelFromSnapshot(DocumentSnapshot doc, bool shuffle) {
     RadioQuestion question = new RadioQuestion();
     question.title = doc.data()['title'];
 
     var optionJson = jsonDecode(doc.data()['answer_option'])['content'] as List;
 
-    List<phqAnswerOption> answerOptions =
-        optionJson.map((op) => phqAnswerOption.fromJson(op)).toList();
+    List<phqAnswerOption> answerOptions = optionJson.map((op) => phqAnswerOption.fromJson(op)).toList();
 
     if (shuffle) {
       answerOptions.shuffle();
@@ -91,40 +89,36 @@ class _SaveSurveyState extends State<SaveSurvey> {
                             itemBuilder: (context, index) {
                               QuestionTile qt = QuestionTile(
                                   qId: snapshot.data.docs[index].id,
-                                  radioQuestion: getQuestionModelFromSnapshot(
-                                      snapshot.data.docs[index], false),
+                                  radioQuestion: getQuestionModelFromSnapshot(snapshot.data.docs[index], false),
                                   index: index);
                               questionTiles.add(qt);
                               return qt;
                             },
                           );
-                  }))
+                  })),
+          GestureDetector(
+              onTap: () {
+                int answered = 0;
+                List<Answer> saved_answers = [];
+                for (var t in questionTiles) {
+                  if (t.optionSelected.length > 0) {
+                    answered += 1;
+                    saved_answers.add(Answer(t.qId, t.optionSelected));
+                  }
+                }
+
+                if (answered == questionTiles.length) {
+                  print('save to firebase');
+                  dbService.saveSurveyAnwsers(
+                      new UserAnswer(authService.getCurrentUserUid(), widget.surveyId, saved_answers));
+                  Navigator.pop(context);
+                }
+
+                print(saved_answers);
+              },
+              child: purpleButton(context, 'Save'))
         ],
       ))),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.check),
-        onPressed: () {
-          int answered = 0;
-          List<Answer> saved_answers = [];
-          for (var t in questionTiles) {
-            if (t.optionSelected.length > 0) {
-              answered += 1;
-              saved_answers.add(Answer(t.qId, t.optionSelected));
-            }
-          }
-
-          if (answered == questionTiles.length) {
-            print('save to firebase');
-            dbService.saveSurveyAnwsers(new UserAnswer(
-                authService.getCurrentUserUid(),
-                widget.surveyId,
-                saved_answers));
-            Navigator.pop(context);
-          }
-
-          print(saved_answers);
-        },
-      ),
     );
   }
 }
